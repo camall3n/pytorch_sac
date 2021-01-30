@@ -8,6 +8,7 @@ import math
 import os
 import sys
 import time
+from tqdm import tqdm
 import pickle as pkl
 
 from video import VideoRecorder
@@ -97,6 +98,7 @@ class Workspace(object):
     def run(self):
         episode, episode_reward, done = 0, 0, True
         start_time = time.time()
+        pbar = tqdm(total=self.cfg.num_train_steps)
         while self.step < self.cfg.num_train_steps:
             if done:
                 if self.step > 0:
@@ -147,6 +149,9 @@ class Workspace(object):
             obs = next_obs
             episode_step += 1
             self.step += 1
+            pbar.update(1)
+        pbar.close()
+
 
 
 @hydra.main(config_path='config/train.yaml', strict=True)
